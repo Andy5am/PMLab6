@@ -13,47 +13,47 @@ import android.widget.ListView
 
 class MainActivity : AppCompatActivity(), MediaPlayerControl {
     override fun getDuration(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+        if(musicSrv!=null &amp;&amp; musicBound &amp;&amp; musicSrv.isPng())
+        return musicSrv.getDur();
+        else return 0;    }
 
     override fun pause() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+        musicSrv.pausePlayer()    }
 
     override fun getBufferPercentage(): Int {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun seekTo(pos: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+        musicSrv.seek(pos)    }
 
     override fun getCurrentPosition(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+        if(musicSrv!=null &amp;&amp; musicBound &amp;&amp; musicSrv.isPng())
+        return musicSrv.getPosn();
+        else return 0;    }
 
     override fun canSeekBackward(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+        return true    }
 
     override fun start() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+        musicSrv.go();    }
 
     override fun getAudioSessionId(): Int {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun canPause(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return true
     }
 
     override fun canSeekForward(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return true
     }
 
     override fun isPlaying(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if(musicSrv!=null &amp;&amp; musicBound)
+        return musicSrv.isPng();
+    return false
     }
 
     private var songList: ArrayList<Song>? = null
@@ -100,17 +100,29 @@ class MainActivity : AppCompatActivity(), MediaPlayerControl {
     private fun setController() {
         //set the controller up
         controller = MusicController(this)
-        controller!!.setPrevNextListeners(object : View.OnClickListener() {
-            fun onClick(v: View) {
+        controller!!.setPrevNextListeners(object : View.OnClickListener {
+            override fun onClick(v: View) {
                 playNext()
             }
-        }, object : View.OnClickListener() {
-            fun onClick(v: View) {
+        }, object : View.OnClickListener {
+            override fun onClick(v: View) {
                 playPrev()
             }
         })
         controller!!.setMediaPlayer(this);
         controller!!.setAnchorView(findViewById(R.id.song_list));
         controller!!.setEnabled(true);
+    }
+
+    //play next
+    private fun playNext() {
+        musicSrv.playNext()
+        controller!!.show(0)
+    }
+
+    //play previous
+    private fun playPrev() {
+        musicSrv.playPrev()
+        controller!!.show(0)
     }
 }
